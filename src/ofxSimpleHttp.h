@@ -41,6 +41,7 @@
 
 #include "Poco/Net/Context.h"
 #include "Poco/Net/HTTPBasicCredentials.h"
+#include "Poco/Net/OAuth20Credentials.h"
 #include "ofxSimpleHttpResponse.h"
 #include "ofThread.h"
 #include "ofEvents.h"
@@ -48,6 +49,7 @@
 #include <queue>
 #include <map>
 #include "ofxChecksum.h"
+#include "ofxSimpleHttpsPostRequest.h"
 
 
 class ofxSimpleHttp : public ofThread{
@@ -115,6 +117,11 @@ class ofxSimpleHttp : public ofThread{
 		void						setTimeOut(int seconds);
 		void						setUserAgent(std::string newUserAgent );
 		void						setCredentials(std::string username, std::string password);
+
+        // oauth token ////////////////////
+        void                        setOauthToken(std::string token);
+        std::string                 makeGetOauthTokenRequest(std::string tokenURL, std::string clientID, std::string clientSecret); //this makes a blocking post request...but is very necessary
+    
 		void						setMaxQueueLength(int len);
 		void 					setCopyBufferSize(float KB); /*in KiloBytes (1 -> 1024 bytes)*/
 		void						setIdleTimeAfterEachDownload(float seconds); //wait a bit before notifying once the dowload is over
@@ -180,8 +187,15 @@ class ofxSimpleHttp : public ofThread{
 		ofxSimpleHttpResponse		response; //used by blocking fetch() methods
 
 		ProxyConfig				proxyConfig;
-		bool						useCredentials;
+    
+        //regular credentials
+		bool						        useCredentials;
 		Poco::Net::HTTPBasicCredentials		credentials;
+    
+        //oauth 2.0 credentials
+        bool                                useOauthToken;
+        Poco::Net::OAuth20Credentials       oauthCredentials;
+        std::string                         oauthToken; //necessary?
 
 		std::queue<ofxSimpleHttpResponse>		responsesPendingNotification; //we store here downloads that arrived so that we can notify from main thread
 		std::map<std::string, std::string> 	customHttpHeaders;

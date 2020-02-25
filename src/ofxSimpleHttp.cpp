@@ -46,6 +46,7 @@ ofxSimpleHttp::ofxSimpleHttp(){
 	avgDownloadSpeed = 0.0f;
 	speedLimit = 0.0f;
 	useCredentials = false;
+    useOauthToken = false;
 	avgSpeedNow = 0.0f;
 }
 
@@ -161,6 +162,35 @@ void ofxSimpleHttp::setCredentials(std::string username, std::string password){
 		credentials.setPassword(password);
 		useCredentials = true;
 	}
+}
+
+void ofxSimpleHttp::setOauthToken(std::string token){
+    oauthCredentials.setBearerToken(token);
+    useOauthToken = true;
+}
+
+string ofxSimpleHttp::makeGetOauthTokenRequest(std::string tokenURL, std::string clientID, std::string clientSecret){
+
+    std::ostringstream bodyStream;
+    bodyStream << "grant_type=client_credentials&client_id=" << clientID << "&client_secret=" << clientSecret << "&scope=squidex-api";
+    string body = bodyStream.str();
+
+    map<string,string> headers;
+
+    ofxSimpleHttpsPostRequest p = ofxSimpleHttpsPostRequest();
+
+    std::cout << "starting request" << std::endl;
+
+    PostRequestResponse response = p.makePostRequest(tokenURL, body, headers);
+
+    if(response.successful == true){
+                
+        ofJson json = ofJson::parse(response.responseString);
+        return json["access_token"].get<std::string>();
+        
+    }else{
+        return "";
+    }
 }
 
 void ofxSimpleHttp::setMaxQueueLength(int len){
@@ -560,6 +590,7 @@ void ofxSimpleHttp::fetchURLToDisk(std::string url, std::string expectedChecksum
 	}
 }
 
+//CAMERON this is what ofxApp ultimately calls
 void ofxSimpleHttp::fetchURLToDisk(std::string url, bool notifyOnSuccess,
 								   std::string dirWhereToSave, std::string customField){
 	fetchURLToDisk(url, "", notifyOnSuccess, dirWhereToSave, customField);
@@ -769,6 +800,11 @@ bool ofxSimpleHttp::downloadURL(ofxSimpleHttpResponse* resp, bool sendResultThro
 				if(useCredentials){
 					credentials.authenticate(req);
 				}
+                
+                //CAMERON oauth stuff
+                if(useOauthToken){
+                    oauthCredentials.authenticate(req);
+                }
 
 				resp->timeDowloadStarted = ofGetElapsedTimef();
 
@@ -1000,7 +1036,7 @@ bool ofxSimpleHttp::downloadURL(ofxSimpleHttpResponse* resp, bool sendResultThro
 
 			}else{ //we are running from a bg thread
 
-				if (notifyFromMainThread){ //user wants to get notified form main thread, we need to enqueue the notification
+				if (notifyFromMainThread){ //user wants to get notified from main thread, we need to enqueue the notification
 					if (timeToStop == false){	//see if we have been destructed! dont forward events if so
 						lock();
 						ofxSimpleHttpResponse tempCopy = *resp;
