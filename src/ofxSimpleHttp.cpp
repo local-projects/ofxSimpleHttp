@@ -164,12 +164,12 @@ void ofxSimpleHttp::setCredentials(std::string username, std::string password){
 	}
 }
 
-void ofxSimpleHttp::setOauthToken(std::string token){
+void ofxSimpleHttp::setOAuthToken(std::string token){
     oauthCredentials.setBearerToken(token);
     useOauthToken = true;
 }
 
-string ofxSimpleHttp::makeGetOauthTokenRequest(std::string tokenURL, std::string clientID, std::string clientSecret){
+string ofxSimpleHttp::makeGetOAuthTokenRequest(std::string tokenURL, std::string clientID, std::string clientSecret){
 
     std::ostringstream bodyStream;
     bodyStream << "grant_type=client_credentials&client_id=" << clientID << "&client_secret=" << clientSecret << "&scope=squidex-api";
@@ -590,7 +590,6 @@ void ofxSimpleHttp::fetchURLToDisk(std::string url, std::string expectedChecksum
 	}
 }
 
-//CAMERON this is what ofxApp ultimately calls
 void ofxSimpleHttp::fetchURLToDisk(std::string url, bool notifyOnSuccess,
 								   std::string dirWhereToSave, std::string customField){
 	fetchURLToDisk(url, "", notifyOnSuccess, dirWhereToSave, customField);
@@ -801,7 +800,6 @@ bool ofxSimpleHttp::downloadURL(ofxSimpleHttpResponse* resp, bool sendResultThro
 					credentials.authenticate(req);
 				}
                 
-                //CAMERON oauth stuff
                 if(useOauthToken){
                     oauthCredentials.authenticate(req);
                 }

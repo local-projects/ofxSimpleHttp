@@ -183,6 +183,9 @@ void ofxDownloadCentral::setCredentials(const std::string& user, const std::stri
 	credentials.second = password;
 }
 
+void ofxDownloadCentral::setOAuthToken(const std::string token){
+    oauthToken = token;
+}
 
 std::string ofxDownloadCentral::getDrawableInfo(bool drawAllPending, bool detailed){
 

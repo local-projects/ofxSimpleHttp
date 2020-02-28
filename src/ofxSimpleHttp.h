@@ -119,8 +119,8 @@ class ofxSimpleHttp : public ofThread{
 		void						setCredentials(std::string username, std::string password);
 
         // oauth token ////////////////////
-        void                        setOauthToken(std::string token);
-        std::string                 makeGetOauthTokenRequest(std::string tokenURL, std::string clientID, std::string clientSecret); //this makes a blocking post request...but is very necessary
+        void                        setOAuthToken(std::string token);
+        std::string                 makeGetOAuthTokenRequest(std::string tokenURL, std::string clientID, std::string clientSecret); //this makes a blocking post request...but is very necessary
     
 		void						setMaxQueueLength(int len);
 		void 					setCopyBufferSize(float KB); /*in KiloBytes (1 -> 1024 bytes)*/

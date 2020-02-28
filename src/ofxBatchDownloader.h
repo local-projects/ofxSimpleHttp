@@ -73,7 +73,8 @@ public:
 
 	void setProxyConfiguration(const ofxSimpleHttp::ProxyConfig & c);
 	void setCredentials(const std::string& user, const std::string& password);
-
+    void setOAuthToken(const std::string token);
+    
 	uint64_t getDownloadedBytesSoFar(){ return downloadedSoFar;}
 	int getNumSuppliedUrls();
 	int getNumFailedUrls();

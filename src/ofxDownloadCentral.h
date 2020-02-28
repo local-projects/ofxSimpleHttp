@@ -85,6 +85,7 @@ class ofxDownloadCentral{
 		void setChecksumType(ofxChecksum::Type type); //when you supply a checksum to compare a downloaded file against, what type will it be?
 		void setProxyConfiguration(const ofxSimpleHttp::ProxyConfig & c);
 		void setCredentials(const std::string& user, const std::string& password);
+        void setOAuthToken(const std::string token);
 
 		void setCopyBufferSize(float bufferInKb);
 
@@ -138,6 +139,10 @@ class ofxDownloadCentral{
 				if(credentials.first.size() || credentials.second.size()){
 					d->setCredentials(credentials.first, credentials.second);
 				}
+                if(oauthToken.size()){
+                    d->setOAuthToken(oauthToken);
+                }
+                
 				if(timeOut > 0.0f) d->setTimeOut(timeOut);
 				if(speedLimit > 0.0f) d->setSpeedLimit(speedLimit);
 
@@ -202,6 +207,7 @@ class ofxDownloadCentral{
 
 		ofxSimpleHttp::ProxyConfig			proxyConfig;
 		std::pair<std::string,std::string> 	credentials;
+        std::string                         oauthToken;
 
 
 };

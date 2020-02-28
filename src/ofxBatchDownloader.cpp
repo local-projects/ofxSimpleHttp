@@ -46,6 +46,9 @@ void ofxBatchDownloader::setCredentials(const std::string& user, const std::stri
 	http.setCredentials(user, password);
 }
 
+void ofxBatchDownloader::setOAuthToken(const std::string token){
+    http.setOAuthToken(token);
+}
 
 void ofxBatchDownloader::setVerbose(bool b){}
 
